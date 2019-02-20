@@ -121,8 +121,10 @@
     <ClInclude Include="DeviceConfiguration.h" />
     <ClInclude Include="GeneralHelper.h" />
     <ClInclude Include="IntelHexParse.h" />
+    <ClInclude Include="IntelHexParser.h" />
     <ClInclude Include="LocalWebServer.h" />
-    <ClInclude Include="Stk500.h" />
+    <ClInclude Include="StatusCodes.h" />
+    <ClInclude Include="STK500.h" />
     <ClInclude Include="WebServ.h" />
     <ClInclude Include="__vm\.SpecterSpaceFlash.vsarduino.h" />
   </ItemGroup>
@@ -132,8 +134,9 @@
     <ClCompile Include="DeviceConfiguration.cpp" />
     <ClCompile Include="GeneralHelper.cpp" />
     <ClCompile Include="IntelHexParse.cpp" />
+    <ClCompile Include="IntelHexParser.cpp" />
     <ClCompile Include="LocalWebServer.cpp" />
-    <ClCompile Include="Stk500.cpp" />
+    <ClCompile Include="STK500.cpp" />
     <ClCompile Include="WebServ.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

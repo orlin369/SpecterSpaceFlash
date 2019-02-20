@@ -5,7 +5,7 @@
 #include "WebServ.h"
 #include <ESP8266WiFi.h>
 #include "FS.h"
-#include "IntelHexParse.h"
+#include "IntelHexParser.h"
 #include "Stk500.h"
 
 

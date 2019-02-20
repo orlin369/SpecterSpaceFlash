@@ -2,7 +2,7 @@
 #include "WebServ.h"
 #include <ESP8266WiFi.h>
 #include "FS.h"
-#include "IntelHexParse.h"
+#include "IntelHexParserClass.h"
 #include "Stk500.h"
 
 
@@ -65,7 +65,7 @@ void WebServ::WSCmdFlash(WiFiClient* client, String filename) {
   
   if(file) {
     stk500.setupDevice();
-    IntelHexParse hexParse = IntelHexParse();
+    IntelHexParserClass hexParse = IntelHexParserClass();
     
     while(file.available()) {
 

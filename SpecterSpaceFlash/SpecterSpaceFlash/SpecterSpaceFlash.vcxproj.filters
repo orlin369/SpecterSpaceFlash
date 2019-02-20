@@ -48,10 +48,16 @@
     <ClInclude Include="IntelHexParse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Stk500.h">
+    <ClInclude Include="WebServ.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WebServ.h">
+    <ClInclude Include="STK500.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IntelHexParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StatusCodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -74,10 +80,13 @@
     <ClCompile Include="IntelHexParse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Stk500.cpp">
+    <ClCompile Include="WebServ.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WebServ.cpp">
+    <ClCompile Include="STK500.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IntelHexParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

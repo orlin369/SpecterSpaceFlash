@@ -1,4 +1,4 @@
-// STK500.h
+// IntelHexParser.h
 
 /*
 
@@ -24,8 +24,8 @@ SOFTWARE.
 
 */
 
-#ifndef _STK500_h
-#define _STK500_h
+#ifndef _INTELHEXPARSER_h
+#define _INTELHEXPARSER_h
 
 #if defined(ARDUINO) && ARDUINO >= 100
 	#include "arduino.h"
@@ -37,43 +37,35 @@ SOFTWARE.
 
 #include "DebugPort.h"
 
-#include "StatusCodes.h"
-
-#define CMD_SYNC 0x30
-#define CMD_ENTER_PROG_MODE 0x50
-#define CMD_EXIT_PROG_MODE 0x51
-#define CMD_EXT_PROG_PARAMS 0x45
-#define CMD_PROG_PARAMS 0x42
-#define CMD_LOAD_ADDRESS 0x55
-#define RESPONSE_OK 0x10
-#define RESPONSE_SYNC 0x14
-
-class STK500Class
+class IntelHexParserClass
 {
 public:
-	STK500Class(int targetResetPin);
-	void resetTarget();
-	uint8 getSync();
-	uint8 enterProgMode();
-	uint8 exitProgMode();
-	uint8 loadAddress(uint8 adrHi, uint8 adrLo);
-	uint8 setProgParams();
-	uint8 setExtProgParams();
-
-	void setupDevice();
-	uint8 flashPage(uint8* loadAddress, uint8* data);
+	IntelHexParserClass();
+	void ParseLine(byte* data);
+	byte* GetMemoryPage();
+	byte* GetLoadAddress();
+	bool IsPageReady();
 
 private:
-	uint8 execCmd(uint8 cmd);
-	uint8 execParam(uint8 cmd, uint8* params, int count);
-	uint8 sendBytes(uint8* bytes, int count);
-	uint8 waitForSerialData(int dataCount, int timeout);
-	int getFlashPageCount(uint8 flashData[][131]);
+	int _address = 0;
+	int _length = 0;
+	int _nextAddress = 0;
+	int _memIdx = 0;
+	int _recordType = 0;
+	byte _memoryPage[128];
+	byte _loadAddress[2];
+	bool _pageReady = false;
+	bool _firstRun = true;
 
-	int _targetResetPin;
+	int GetAddress(byte* hexline);
+	int GetLength(byte* hexline);
+	int GetRecordType(byte* hexline);
+	byte* GetData(byte* hexline, int len);
+	void GetLoadAddress(byte* hexline);
+	void EndOfFile();
 };
 
-extern STK500Class STK500(PIN_RESET_TARGET);
+extern IntelHexParserClass IntelHexParser;
 
 #endif
 

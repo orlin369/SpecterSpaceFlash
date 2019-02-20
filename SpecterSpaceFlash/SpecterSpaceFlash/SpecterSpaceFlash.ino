@@ -24,11 +24,17 @@ SOFTWARE.
 
 #pragma region Headres
 
+#include "StatusCodes.h"
+#include "IntelHexParser.h"
+#include "STK500.h"
 #include "GeneralHelper.h"
 #include "DeviceConfiguration.h"
 #include "DebugPort.h"
 #include "ApplicationConfiguration.h"
 #include "LocalWebServer.h"
+
+#include "STK500.h"
+#include "IntelHexParser.h"
 
 // Builtin functionalities.
 #include <ESP8266WiFi.h>
@@ -87,7 +93,6 @@ bool IsConnectedToInternet_g = false;
 #endif
 
 #pragma endregion
-
 
 #pragma region Prototypes
 

@@ -71,6 +71,15 @@ SOFTWARE.
 
 #pragma endregion
 
+#pragma region STK500
+
+#define STK500_PORT Serial
+
+#define STK500_PORT_BAUDRATE 115200
+
+#pragma endregion
+
+
 #pragma region AP Configuration
 
 /** @brief Default AP password. */

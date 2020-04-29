@@ -56,15 +56,13 @@ void WebServ::WSCmdDelete(WiFiClient* client, String filename) {
 }
 
 void WebServ::WSCmdFlash(WiFiClient* client, String filename) {
-
-  Stk500 stk500(_resetPin);
   
   SPIFFS.begin();
 
   File file = SPIFFS.open(filename, "r");
   
   if(file) {
-    stk500.setupDevice();
+    STK500.prepareTarget();
     IntelHexParserClass hexParse = IntelHexParserClass();
     
     while(file.available()) {
@@ -77,12 +75,12 @@ void WebServ::WSCmdFlash(WiFiClient* client, String filename) {
       if(hexParse.IsPageReady()){
         byte* page = hexParse.GetMemoryPage();
         byte* address = hexParse.GetLoadAddress();
-        stk500.flashPage(address, page);
+        STK500.flashPage(address, page);
       }
     }
   }
   
-  stk500.exitProgMode();
+  STK500.exitProgMode();
   file.close();
   SPIFFS.end();
 }

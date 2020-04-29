@@ -51,17 +51,57 @@ SOFTWARE.
 class STK500Class
 {
 public:
-	STK500Class(int targetResetPin);
-	void resetTarget();
-	uint8 getSync();
-	uint8 enterProgMode();
-	uint8 exitProgMode();
-	uint8 loadAddress(uint8 adrHi, uint8 adrLo);
-	uint8 setProgParams();
-	uint8 setExtProgParams();
 
-	void setupDevice();
+	/** @brief Constructor.
+	 *  @param int targetResetPin, Target RESET GPIO.
+	 *  @return Void.
+	 */
+	STK500Class(int targetResetPin);
+	
+	/** @brief Prepare the target.
+	 *  @return Void.
+	 */
+	void prepareTarget();
+	
+	/** @brief Flash page on specified address.
+	 *  @param uint8* address, Address of the page.
+	 *  @param uint8* data, Data for the page.
+	 *  @return Void.
+	 */
 	uint8 flashPage(uint8* loadAddress, uint8* data);
+
+	/** @brief Reset the target.
+	 *  @return Void.
+	 */
+	void resetTarget();
+	
+	/** @brief Get the sync information.
+	 *  @return uint8, State of the communication.
+	 *  @see StatusCodes.h
+	 */
+	uint8 getSync();
+	
+	/** @brief Enter the target in to programming mode.
+	 *  @return uint8, State of the communication.
+	 *  @see StatusCodes.h
+	 */
+	uint8 enterProgMode();
+	
+	/** @brief Escape the target in to programming mode.
+	 *  @return uint8, State of the communication.
+	 *  @see StatusCodes.h
+	 */
+	uint8 exitProgMode();
+	
+	/** @brief Set external programming parametters.
+ *  @return uint8, State of the communication.
+ *  @see StatusCodes.h
+ */
+	uint8 loadAddress(uint8 adrHi, uint8 adrLo);
+	
+	uint8 setProgParams();
+	
+	uint8 setExtProgParams();
 
 private:
 	uint8 execCmd(uint8 cmd);
@@ -73,6 +113,7 @@ private:
 	int _targetResetPin;
 };
 
+/* @brief Singelton STK500 instance. */
 extern STK500Class STK500(PIN_RESET_TARGET);
 
 #endif

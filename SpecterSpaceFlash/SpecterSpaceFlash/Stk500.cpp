@@ -24,6 +24,10 @@ SOFTWARE.
 
 #include "STK500.h"
 
+/** @brief Constructor.
+ *  @param int targetResetPin, Target RESET GPIO.
+ *  @return Void.
+ */
 STK500Class::STK500Class(int targetResetPin)
 {
 	DEBUGLOG("\r\n");
@@ -40,7 +44,10 @@ STK500Class::STK500Class(int targetResetPin)
 	pinMode(_targetResetPin, OUTPUT);
 }
 
-void STK500Class::setupDevice()
+/** @brief Prepare the target.
+ *  @return Void.
+ */
+void STK500Class::prepareTarget()
 {
 	DEBUGLOG("\r\n");
 	DEBUGLOG(__PRETTY_FUNCTION__);
@@ -53,6 +60,11 @@ void STK500Class::setupDevice()
 	enterProgMode();
 }
 
+/** @brief Flash page on specified address.
+ *  @param uint8* address, Address of the page.
+ *  @param uint8* data, Data for the page.
+ *  @return Void.
+ */
 uint8 STK500Class::flashPage(uint8* address, uint8* data)
 {
 	DEBUGLOG("\r\n");
@@ -68,7 +80,9 @@ uint8 STK500Class::flashPage(uint8* address, uint8* data)
 	{
 		STK500_PORT.write(data[i]);
 
+#if defined(ARDUINO_ARCH_ESP8266)
 		ESP.wdtFeed();
+#endif
 	}
 	STK500_PORT.write(0x20);
 
@@ -84,6 +98,9 @@ uint8 STK500Class::flashPage(uint8* address, uint8* data)
 	return StatusCodes::Error;
 }
 
+/** @brief Reset the target.
+ *  @return Void.
+ */
 void STK500Class::resetTarget()
 {
 	DEBUGLOG("\r\n");
@@ -100,6 +117,10 @@ void STK500Class::resetTarget()
 	delay(100);
 }
 
+/** @brief Get the sync information.
+ *  @return uint8, State of the communication.
+ *  @see StatusCodes.h
+ */
 uint8 STK500Class::getSync()
 {
 	DEBUGLOG("\r\n");
@@ -109,6 +130,10 @@ uint8 STK500Class::getSync()
 	return execCmd(CMD_SYNC);
 }
 
+/** @brief Enter the target in to programming mode.
+ *  @return uint8, State of the communication.
+ *  @see StatusCodes.h
+ */
 uint8 STK500Class::enterProgMode()
 {
 	DEBUGLOG("\r\n");
@@ -118,6 +143,10 @@ uint8 STK500Class::enterProgMode()
 	return execCmd(CMD_ENTER_PROG_MODE);
 }
 
+/** @brief Escape the target in to programming mode.
+ *  @return uint8, State of the communication.
+ *  @see StatusCodes.h
+ */
 uint8 STK500Class::exitProgMode()
 {
 	DEBUGLOG("\r\n");
@@ -127,26 +156,26 @@ uint8 STK500Class::exitProgMode()
 	return execCmd(CMD_EXIT_PROG_MODE);
 }
 
+/** @brief Set external programming parametters.
+ *  @return uint8, State of the communication.
+ *  @see StatusCodes.h
+ */
 uint8 STK500Class::setExtProgParams()
 {
 	DEBUGLOG("\r\n");
 	DEBUGLOG(__PRETTY_FUNCTION__);
 	DEBUGLOG("\r\n");
 
-	uint8 ParamsL[] = { 0x05, 0x04, 0xd7, 0xc2, 0x00 };
+	uint8 ParamsL[5] = { 0x05, 0x04, 0xd7, 0xc2, 0x00 };
 	return execParam(CMD_EXT_PROG_PARAMS, ParamsL, sizeof(ParamsL));
 }
 
-uint8 STK500Class::setProgParams()
-{
-	DEBUGLOG("\r\n");
-	DEBUGLOG(__PRETTY_FUNCTION__);
-	DEBUGLOG("\r\n");
-
-	uint8 ParamsL[] = { 0x86, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x03, 0xff, 0xff, 0xff, 0xff, 0x00, 0x80, 0x04, 0x00, 0x00, 0x00, 0x80, 0x00 };
-	return execParam(CMD_PROG_PARAMS, ParamsL, sizeof(ParamsL));
-}
-
+/** @brief Load address.
+ *  @param uint8 adrHi, High byte of the address.
+ *  @param uint8 adrLo, Low byte of the address.
+ *  @return uint8, State of the communication.
+ *  @see StatusCodes.h
+ */
 uint8 STK500Class::loadAddress(uint8 adrHi, uint8 adrLo)
 {
 	DEBUGLOG("\r\n");
@@ -157,6 +186,27 @@ uint8 STK500Class::loadAddress(uint8 adrHi, uint8 adrLo)
 	return execParam(CMD_LOAD_ADDRESS, ParamsL, sizeof(ParamsL));
 }
 
+
+/** @brief Set programming parametters.
+ *  @return uint8, State of the communication.
+ *  @see StatusCodes.h
+ */
+uint8 STK500Class::setProgParams()
+{
+	DEBUGLOG("\r\n");
+	DEBUGLOG(__PRETTY_FUNCTION__);
+	DEBUGLOG("\r\n");
+
+	uint8 ParamsL[] = { 0x86, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x03, 0xff, 0xff, 0xff, 0xff, 0x00, 0x80, 0x04, 0x00, 0x00, 0x00, 0x80, 0x00 };
+	return execParam(CMD_PROG_PARAMS, ParamsL, sizeof(ParamsL));
+}
+
+
+/** @brief Execute command.
+ *  @param uint8 cmd, Command.
+ *  @return uint8, State of the communication.
+ *  @see StatusCodes.h
+ */
 uint8 STK500Class::execCmd(uint8 cmd)
 {
 	DEBUGLOG("\r\n");
@@ -167,7 +217,14 @@ uint8 STK500Class::execCmd(uint8 cmd)
 	return sendBytes(DataL, sizeof(DataL));
 }
 
-uint8 STK500Class::execParam(uint8 cmd, uint8* params, int count)
+/** @brief Execute parameter.
+ *  @param uint8 cmd, Command.
+ *  @param uint8* params, Parameters.
+ *  @param uint8 len, Length of the parameters.
+ *  @return uint8, State of the communication.
+ *  @see StatusCodes.h
+ */
+uint8 STK500Class::execParam(uint8 cmd, uint8* params, int len)
 {
 	DEBUGLOG("\r\n");
 	DEBUGLOG(__PRETTY_FUNCTION__);
@@ -177,12 +234,14 @@ uint8 STK500Class::execParam(uint8 cmd, uint8* params, int count)
 	DataL[0] = cmd;
 
 	int IndexL = 0;
-	while (IndexL < count)
+	while (IndexL < len)
 	{
 		DataL[IndexL + 1] = params[IndexL];
 		IndexL++;
 
+#if defined(ARDUINO_ARCH_ESP8266)
 		ESP.wdtFeed();
+#endif
 	}
 
 	DataL[IndexL + 1] = 0x20;
@@ -190,13 +249,19 @@ uint8 STK500Class::execParam(uint8 cmd, uint8* params, int count)
 	return sendBytes(DataL, IndexL + 2);
 }
 
-uint8 STK500Class::sendBytes(uint8* bytes, int count)
+/** @brief Execute parameter.
+ *  @param uint8 data*, Data.
+ *  @param uint8 len, Length of the data.
+ *  @return uint8, State of the communication.
+ *  @see StatusCodes.h
+ */
+uint8 STK500Class::sendBytes(uint8* data, int len)
 {
 	DEBUGLOG("\r\n");
 	DEBUGLOG(__PRETTY_FUNCTION__);
 	DEBUGLOG("\r\n");
 
-	STK500_PORT.write(bytes, count);
+	STK500_PORT.write(data, len);
 	waitForSerialData(2, 1000);
 
 	uint8 sync = STK500_PORT.read();
@@ -210,7 +275,13 @@ uint8 STK500Class::sendBytes(uint8* bytes, int count)
 	return StatusCodes::Error;
 }
 
-uint8 STK500Class::waitForSerialData(int dataCount, int timeout)
+/** @brief Execute parameter.
+ *  @param int len, Length of the data.
+ *  @param int timeout, Timeout to recieve the data.
+ *  @return uint8, State of the communication.
+ *  @see StatusCodes.h
+ */
+uint8 STK500Class::waitForSerialData(int len, int timeout)
 {
 	DEBUGLOG("\r\n");
 	DEBUGLOG(__PRETTY_FUNCTION__);
@@ -220,18 +291,21 @@ uint8 STK500Class::waitForSerialData(int dataCount, int timeout)
 
 	while (timer < timeout)
 	{
-		if (STK500_PORT.available() >= dataCount)
+		if (STK500_PORT.available() >= len)
 		{
 			return StatusCodes::Ok;
 		}
 		delay(1);
 		timer++;
 
+#if defined(ARDUINO_ARCH_ESP8266)
 		ESP.wdtFeed();
+#endif
 	}
 
 	return StatusCodes::TimeOut;
 }
 
+/* @brief Singelton STK500 instance. */
 STK500Class STK500(PIN_RESET_TARGET);
 
